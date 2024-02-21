@@ -1,4 +1,4 @@
-# USU CS 4610 Starter App
+# USU CS 4610 Reptile Tracker
 You are welcome to use this app as a starting point for any projects in this course.
 
 ## Setup
