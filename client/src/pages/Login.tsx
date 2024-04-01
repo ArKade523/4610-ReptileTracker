@@ -1,34 +1,26 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import Loading from '../components/Loading'
+import { setToken } from '../slices/authSlice'
+import { useApi } from '../hooks/useApi'
 
 function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const api = useApi()
 
     const sendLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        const res = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
+        const { token } = await api.post('/sessions', { email, password })
 
-        if (res.ok) {
-            const user = await res.json()
-            console.log(user) // TODO: save user to state
-            navigate('/')
-        } else {
-            console.error('Login failed')
-            setEmail('')
-            setPassword('')
-            setLoading(false)
-        }
+        dispatch(setToken(token))
+        setLoading(false)
+        navigate('/')
     }
     return (
         <div>

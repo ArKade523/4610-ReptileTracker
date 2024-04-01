@@ -6,6 +6,8 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
+import { buildUsersController } from './server/controllers/users_controller'
+import { buildSessionsController } from './server/controllers/sessions_controller'
 dotenv.config()
 
 const DEBUG = process.env.NODE_ENV !== 'production'
@@ -14,6 +16,7 @@ const MANIFEST: Record<string, any> = DEBUG
     : JSON.parse(fs.readFileSync('static/.vite/manifest.json').toString())
 
 const app = express()
+const db = new PrismaClient()
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views', './views')
@@ -36,129 +39,11 @@ if (!DEBUG) {
     })
 }
 
-app.route('/user')
-    .post((req, res) => {
-        const prisma = new PrismaClient()
-        prisma.user
-            .create({
-                data: {
-                    email: req.body.email,
-                    password_hash: bcrypt.hashSync(req.body.password),
-                    Profile: {
-                        create: {
-                            first_name: req.body.first_name,
-                            last_name: req.body.last_name
-                        }
-                    }
-                }
-            })
-            .then((user) => {
-                res.json(user)
-            })
-            .catch((err) => {
-                res.status(500).json(err)
-            })
-            .finally(() => {
-                prisma.$disconnect()
-            })
-    })
-    .get((req, res) => {
-        const prisma = new PrismaClient()
-        prisma.user
-            .findMany({
-                include: {
-                    Profile: true
-                }
-            })
-            .then((users) => {
-                res.json(users)
-            })
-            .catch((err) => {
-                res.status(500).json(err)
-            })
-            .finally(() => {
-                prisma.$disconnect()
-            })
-    })
-
-app.get('/user/:id', (req, res) => {
-    const prisma = new PrismaClient()
-    prisma.user
-        .findUnique({
-            where: {
-                id: parseInt(req.params.id)
-            },
-            include: {
-                Profile: true
-            }
-        })
-        .then((user) => {
-            res.json(user)
-        })
-        .catch((err) => {
-            res.status(500).json(err)
-        })
-        .finally(() => {
-            prisma.$disconnect()
-        })
-})
-
-app.post('/login', (req, res) => {
-    const prisma = new PrismaClient()
-    prisma.user
-        .findUnique({
-            where: {
-                email: req.body.email
-            }
-        })
-        .then((user) => {
-            if (user && bcrypt.compareSync(req.body.password, user.password_hash)) {
-                res.json(user)
-            } else {
-                res.status(401).json({ message: 'Invalid email or password' })
-            }
-        })
-        .catch((err) => {
-            res.status(500).json(err)
-        })
-        .finally(() => {
-            prisma.$disconnect()
-        })
-})
-
-app.get('/logout', (req, res) => {
-    res.json({ message: 'Logged out' })
-})
-
-app.post('/register', (req, res) => {
-    const prisma = new PrismaClient()
-    prisma.user
-        .create({
-            data: {
-                email: req.body.email,
-                password_hash: bcrypt.hashSync(req.body.password),
-                Profile: {
-                    create: {
-                        first_name: req.body.firstName,
-                        last_name: req.body.lastName
-                    }
-                }
-            }
-        })
-        .then((user) => {
-            res.json(user)
-        })
-        .catch((err) => {
-            res.status(500).json(err)
-        })
-        .finally(() => {
-            prisma.$disconnect()
-        })
-})
+app.use('/users', buildUsersController(db))
+app.use('/sessions', buildSessionsController(db))
 
 app.post('/create-reptile', (req, res) => {
-    const prisma = new PrismaClient()
-    prisma.reptile
+    db.reptile
         .create({
             data: {
                 name: req.body.name,
@@ -173,15 +58,11 @@ app.post('/create-reptile', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.post('/update-reptile', (req, res) => {
     // TODO: Make sure that user is authorized to update this reptile
-    const prisma = new PrismaClient()
-    prisma.reptile
+    db.reptile
         .update({
             where: {
                 id: req.body.id
@@ -198,15 +79,11 @@ app.post('/update-reptile', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/delete-reptile/:id', (req, res) => {
     // TODO: Make sure that user is authorized to delete this reptile
-    const prisma = new PrismaClient()
-    prisma.reptile
+    db.reptile
         .delete({
             where: {
                 id: parseInt(req.params.id)
@@ -218,15 +95,11 @@ app.get('/delete-reptile/:id', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/user/:id/reptiles', (req, res) => {
     // TODO: Make sure that user is authorized to view these reptiles
-    const prisma = new PrismaClient()
-    prisma.reptile
+    db.reptile
         .findMany({
             where: {
                 user_id: parseInt(req.params.id)
@@ -238,15 +111,11 @@ app.get('/user/:id/reptiles', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.post('/create-feeding', (req, res) => {
     // TODO: Make sure that user is authorized to create a feeding for this reptile
-    const prisma = new PrismaClient()
-    prisma.feeding
+    db.feeding
         .create({
             data: {
                 foodItem: req.body.foodItem,
@@ -259,15 +128,11 @@ app.post('/create-feeding', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/reptile/:id/feedings', (req, res) => {
     // TODO: Make sure that user is authorized to view these feedings
-    const prisma = new PrismaClient()
-    prisma.feeding
+    db.feeding
         .findMany({
             where: {
                 reptile_id: parseInt(req.params.id)
@@ -279,15 +144,11 @@ app.get('/reptile/:id/feedings', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.post('/create-husbandry', (req, res) => {
     // TODO: Make sure that user is authorized to create a husbandry record for this reptile
-    const prisma = new PrismaClient()
-    prisma.husbandryRecord
+    db.husbandryRecord
         .create({
             data: {
                 length: req.body.length,
@@ -303,15 +164,11 @@ app.post('/create-husbandry', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/reptile/:id/husbandry', (req, res) => {
     // TODO: Make sure that user is authorized to view these husbandry records
-    const prisma = new PrismaClient()
-    prisma.husbandryRecord
+    db.husbandryRecord
         .findMany({
             where: {
                 reptile_id: parseInt(req.params.id)
@@ -323,14 +180,10 @@ app.get('/reptile/:id/husbandry', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.post('/create-schedule', (req, res) => {
-    const prisma = new PrismaClient()
-    prisma.schedule
+    db.schedule
         .create({
             data: {
                 type: req.body.type,
@@ -352,15 +205,11 @@ app.post('/create-schedule', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/reptile/:id/schedule', (req, res) => {
     // TODO: Make sure that user is authorized to view these schedules
-    const prisma = new PrismaClient()
-    prisma.schedule
+    db.schedule
         .findMany({
             where: {
                 reptile_id: parseInt(req.params.id)
@@ -372,15 +221,11 @@ app.get('/reptile/:id/schedule', (req, res) => {
         .catch((err) => {
             res.status(500).json(err)
         })
-        .finally(() => {
-            prisma.$disconnect()
-        })
 })
 
 app.get('/user/:id/schedule', (req, res) => {
     // TODO: Make sure that user is authorized to view these schedules
-    const prisma = new PrismaClient()
-    prisma.schedule
+    db.schedule
         .findMany({
             where: {
                 user_id: parseInt(req.params.id)
@@ -391,9 +236,6 @@ app.get('/user/:id/schedule', (req, res) => {
         })
         .catch((err) => {
             res.status(500).json(err)
-        })
-        .finally(() => {
-            prisma.$disconnect()
         })
 })
 
