@@ -1,8 +1,42 @@
 #root {
-    max-width: 1280px;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
+}
+
+#app {
+    width: 100%;
+}
+
+.bottom-right {
+    margin-left: calc(100% - 3rem);
+    bottom: 0;
+    right: 0;
+}
+
+.card {
+    background-color: var(--color-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem;
+    height: fit-content;
+}
+
+.container-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-height: 90vh;
+    overflow: scroll;
+    margin-top: 2rem;
+}
+.container-item {
+    width: 100%;
+}
+
+.fixed {
+    position: fixed;
 }
 
 .right-aligned {
@@ -11,18 +45,54 @@
 
 .loading {
     display: flex;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(255, 255, 255, 0.2);
     justify-content: center;
     align-items: center;
 }
-
 .loading-spinner {
     margin: 2rem auto;
     font-size: 2rem;
     color: var(--color-accent);
+}
+
+.reptile {
+    background-color: var(--color-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+}
+ul.reptiles-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    list-style-type: none;
+}
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 3rem;
+    height: fit-content;
+}
+
+@media (max-width: 768px) {
+    ul.reptiles-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    ul.reptiles-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (min-width: 769px) {
+    .max-one-third {
+        max-width: calc(100vw / 3);
+    }
 }

@@ -53,10 +53,11 @@ button {
     font-family: inherit;
     background-color: var(--color-secondary);
     cursor: pointer;
-    transition: border-color 0.25s;
+    margin: 0.25rem;
+    transition: background-color 0.25s;
 }
 button:hover {
-    border-color: var(--color-secondary);
+    background-color: var(--color-tertiary);
 }
 button:focus,
 button:focus-visible {
@@ -78,6 +79,29 @@ form > input {
     border-radius: 8px;
     border: 1px solid var(--color-secondary);
     transition: border-color 0.25s;
+}
+form > div {
+    border-radius: 8px;
+    border: 1px solid var(--color-secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: border-color 0.25s;
+    padding: 0.6em 1.2em;
+}
+form > div,
+form > label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    gap: 0.5rem;
+}
+form input[type='radio'] {
+    margin-right: 0.5rem;
+}
+
+li {
+    list-style-type: none;
 }
 
 nav {

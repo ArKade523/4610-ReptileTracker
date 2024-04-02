@@ -1,74 +1,31 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
+import { UsersRepository } from '../repositories/users_repository'
+import { authMiddleware } from '../middleware/authentication'
+import jwt from 'jsonwebtoken'
 
 // /users/...
-export const buildUsersController = (db: PrismaClient) => {
+export const buildUsersController = (usersRepository: UsersRepository) => {
     const router = Router()
 
-    router
-        .route('/')
-        .post((req, res) => {
-            db.user
-                .create({
-                    data: {
-                        email: req.body.email,
-                        password_hash: bcrypt.hashSync(req.body.password),
-                        Profile: {
-                            create: {
-                                first_name: req.body.first_name,
-                                last_name: req.body.last_name
-                            }
-                        }
-                    }
-                })
-                .then((user) => {
-                    res.json(user)
-                })
-                .catch((err) => {
-                    res.status(500).json(err)
-                })
-                .finally(() => {
-                    db.$disconnect()
-                })
-        })
-        .get((req, res) => {
-            db.user
-                .findMany({
-                    include: {
-                        Profile: true
-                    }
-                })
-                .then((users) => {
-                    res.json(users)
-                })
-                .catch((err) => {
-                    res.status(500).json(err)
-                })
-                .finally(() => {
-                    db.$disconnect()
-                })
-        })
+    router.post('/', async (req, res) => {
+        const user = await usersRepository.createUser(req.body)
 
-    router.get('/:id', (req, res) => {
-        db.user
-            .findUnique({
-                where: {
-                    id: parseInt(req.params.id)
-                },
-                include: {
-                    Profile: true
-                }
-            })
-            .then((user) => {
-                res.json(user)
-            })
-            .catch((err) => {
-                res.status(500).json(err)
-            })
-            .finally(() => {
-                db.$disconnect()
-            })
+        const token = jwt.sign(
+            {
+                userId: user.id
+            },
+            process.env.ENCRYPTION_KEY as string
+        )
+
+        res.json({ user, token })
+    })
+
+    router.get('/me', authMiddleware, async (req, res) => {
+        const user = await usersRepository.getUserById(req.user?.id as number)
+
+        res.json({ user })
     })
 
     return router

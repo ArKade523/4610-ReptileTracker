@@ -10,6 +10,9 @@ import { Provider, useSelector } from 'react-redux'
 import store, { RootState } from './store.ts'
 import { Api, ApiContext } from './utils/api.ts'
 import Logout from './pages/Logout.tsx'
+import Profile from './pages/Profile.tsx'
+import ReptilePage from './pages/ReptilePage.tsx'
+import Dashboard from './pages/Dashboard.tsx'
 
 const router = createHashRouter([
     {
@@ -17,9 +20,12 @@ const router = createHashRouter([
         element: <App />,
         children: [
             { path: '', element: <Home /> },
+            { path: 'dashboard', element: <Dashboard /> },
             { path: 'login', element: <Login /> },
             { path: 'register', element: <Register /> },
-            { path: 'logout', element: <Logout /> }
+            { path: 'logout', element: <Logout /> },
+            { path: 'profile', element: <Profile /> },
+            { path: 'reptile/:id', element: <ReptilePage /> }
         ]
     }
 ])

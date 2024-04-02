@@ -5,14 +5,15 @@
     "scripts": {
         "dev": "nodemon index.ts",
         "prebuild": "rimraf ./dist",
-        "build": "tsc && cd client && yarn build",
+        "build": "tsc && cd client && npm run build",
         "postbuild": "cp -r views ./dist/views",
         "migrate-dev": "prisma migrate dev",
         "migrate-deploy": "prisma migrate deploy",
         "migrate-reset": "prisma migrate reset",
         "seed": "prisma db seed",
         "console": "prisma-repl",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "studio": "prisma studio"
     },
     "license": "MIT",
     "devDependencies": {

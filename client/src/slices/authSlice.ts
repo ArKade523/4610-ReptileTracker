@@ -5,11 +5,10 @@ export const authSlice = createSlice({
     initialState: {
         user: null as User | null,
         token: window.localStorage.getItem('jwt') as string | null
-        // id: null as number | null
     },
     reducers: {
         setUser: (state, { payload }) => {
-            state.token = payload
+            state.user = payload.user
         },
         setToken: (state, { payload }) => {
             if (payload) {

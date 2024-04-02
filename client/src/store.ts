@@ -1,10 +1,14 @@
 import { authReducer } from './slices/authSlice'
 import { Reducer, configureStore } from '@reduxjs/toolkit'
+import { reptilesReducer } from './slices/reptilesSlice'
 
 interface State {
     auth: {
         user: User | null
         token: string | null
+    }
+    reptiles: {
+        reptiles: Reptile[]
     }
 }
 
@@ -12,12 +16,16 @@ const initialState: State = {
     auth: {
         user: null,
         token: window.localStorage.getItem('jwt') as string | null
+    },
+    reptiles: {
+        reptiles: []
     }
 }
 
 const reducer: Reducer<State> = (state = initialState, action) => {
     return {
-        auth: authReducer(state.auth, action)
+        auth: authReducer(state.auth, action),
+        reptiles: reptilesReducer(state.reptiles, action)
     }
 }
 

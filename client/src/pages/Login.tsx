@@ -20,7 +20,7 @@ function Login() {
 
         dispatch(setToken(token))
         setLoading(false)
-        navigate('/')
+        navigate('/dashboard')
     }
     return (
         <div>

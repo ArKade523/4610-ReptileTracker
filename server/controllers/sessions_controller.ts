@@ -46,10 +46,17 @@ export const buildSessionsController = (db: PrismaClient) => {
             }
         })
 
-        if (user) {
-            res.json(user)
+        if (user && bcrypt.compareSync(req.body.password, user.password_hash)) {
+            const token = jwt.sign(
+                {
+                    userId: user.id
+                },
+                process.env.ENCRYPTION_KEY as string
+            )
+
+            res.json({ token })
         } else {
-            res.status(500).json({ error: 'Failed to create user' })
+            res.status(404).json({ error: 'Invalid email or password' })
         }
     })
 

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse } from '@fortawesome/free-solid-svg-icons'
+import { faHouse, faUser } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { isLoggedIn } from '../hooks/isLoggedIn'
 
@@ -15,9 +15,16 @@ function Navbar() {
             </ul>
             <ul className="right-aligned">
                 {isLoggedIn() ? (
-                    <li>
-                        <Link to="/logout">Logout</Link>
-                    </li>
+                    <>
+                        <li>
+                            <Link to="/logout">Logout</Link>
+                        </li>
+                        <li>
+                            <Link to="/profile" title="Profile">
+                                <FontAwesomeIcon icon={faUser} />
+                            </Link>
+                        </li>
+                    </>
                 ) : (
                     <>
                         <li>

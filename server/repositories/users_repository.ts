@@ -41,6 +41,9 @@ export class UsersRepository {
         return this.db.user.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                Profile: true
             }
         })
     }
