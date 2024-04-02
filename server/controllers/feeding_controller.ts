@@ -19,5 +19,13 @@ export const buildFeedingController = (feedingRepository: FeedingRepository) => 
         res.json(feedings)
     })
 
+    router.delete('/del/:id', authMiddleware, async (req, res) => {
+        const feeding = await feedingRepository.deleteFeeding(
+            req.user?.id as unknown as number,
+            parseInt(req.params.id)
+        )
+        res.json(feeding)
+    })
+
     return router
 }

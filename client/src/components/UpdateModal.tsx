@@ -75,6 +75,16 @@ function UpdateModal({
                         />
                         Corn Snake
                     </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="species"
+                            value="redtail_boa"
+                            onChange={(e) => setSpecies(e.target.value)}
+                            checked={species === 'redtail_boa'}
+                        />
+                        Redtail Boa
+                    </label>
                 </div>
                 <div>
                     Sex:

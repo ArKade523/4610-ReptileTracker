@@ -19,5 +19,13 @@ export const buildHusbandryController = (husbandryRecordRepository: HusbandryRec
         res.json(husbandryRecords)
     })
 
+    router.delete('/del/:id', authMiddleware, async (req, res) => {
+        const husbandryRecord = await husbandryRecordRepository.deleteHusbandryRecord(
+            req.user?.id as unknown as number,
+            parseInt(req.params.id)
+        )
+        res.json(husbandryRecord)
+    })
+
     return router
 }

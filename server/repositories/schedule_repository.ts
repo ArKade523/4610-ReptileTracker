@@ -100,4 +100,22 @@ export class ScheduleRepository {
             }
         })
     }
+
+    async deleteSchedule(user_id: number, id: number) {
+        const schedule = await this.db.schedule.findFirst({
+            where: {
+                id,
+                user_id
+            }
+        })
+        if (!schedule) {
+            return null
+        }
+
+        return this.db.schedule.delete({
+            where: {
+                id
+            }
+        })
+    }
 }

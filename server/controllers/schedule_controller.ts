@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { ScheduleRepository } from '../repositories/schedule_repository'
 import { authMiddleware } from '../middleware/authentication'
 
-// /schedule/...
+// /schedules/...
 export const buildScheduleController = (scheduleRepository: ScheduleRepository) => {
     const router = Router()
 
@@ -25,6 +25,14 @@ export const buildScheduleController = (scheduleRepository: ScheduleRepository) 
             reptile_id
         )
         res.json(schedules)
+    })
+
+    router.delete('/del/:id', authMiddleware, async (req, res) => {
+        const schedule = await scheduleRepository.deleteSchedule(
+            req.user?.id as unknown as number,
+            parseInt(req.params.id)
+        )
+        res.json(schedule)
     })
 
     return router

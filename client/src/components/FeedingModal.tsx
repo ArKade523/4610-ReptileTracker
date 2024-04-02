@@ -34,6 +34,7 @@ function FeedingModal({
                     value={foodItem}
                     placeholder="Food Item"
                     onChange={(e) => setFoodItem(e.target.value)}
+                    required
                 />
                 <button type="submit">Add Feeding</button>
             </form>

@@ -6,8 +6,8 @@ import { RootState } from '../store'
 
 function ReptileModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     const [reptileName, setReptileName] = useState('')
-    const [reptileSpecies, setReptileSpecies] = useState('')
-    const [reptileSex, setReptileSex] = useState('')
+    const [reptileSpecies, setReptileSpecies] = useState('king_snake')
+    const [reptileSex, setReptileSex] = useState('m')
     const api = useApi()
     const user_id = useSelector((state: RootState) => state.auth.user?.id)
 
@@ -33,6 +33,7 @@ function ReptileModal({ open, onClose }: { open: boolean; onClose: () => void })
                     placeholder="Name"
                     value={reptileName}
                     onChange={(e) => setReptileName(e.target.value)}
+                    required
                 />
                 <div>
                     Species:
@@ -43,6 +44,7 @@ function ReptileModal({ open, onClose }: { open: boolean; onClose: () => void })
                             value="king_snake"
                             onChange={(e) => setReptileSpecies(e.target.value)}
                             checked={reptileSpecies === 'king_snake'}
+                            required
                         />
                         King Snake
                     </label>
@@ -85,6 +87,7 @@ function ReptileModal({ open, onClose }: { open: boolean; onClose: () => void })
                             value="m"
                             onChange={(e) => setReptileSex(e.target.value)}
                             checked={reptileSex === 'm'}
+                            required
                         />
                         Male
                     </label>

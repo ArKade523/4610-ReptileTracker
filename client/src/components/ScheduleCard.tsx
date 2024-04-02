@@ -1,6 +1,19 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { capitalizeFirst } from '../utils/capitalizeFirst'
+import { faX } from '@fortawesome/free-solid-svg-icons'
+import { useApi } from '../hooks/useApi'
 
 function ScheduleCard({ schedule }: { schedule: Schedule }) {
+    const api = useApi()
+
+    const deleteSchedule = () => {
+        if (window.confirm('Are you sure you want to delete this schedule?')) {
+            api.delete(`/schedules/del/${schedule.id}`).then(() => {
+                window.location.reload()
+            })
+        }
+    }
+
     return (
         <div className="card">
             <h3>{capitalizeFirst(schedule.type + 'ing')}</h3>
@@ -21,6 +34,9 @@ function ScheduleCard({ schedule }: { schedule: Schedule }) {
                     !schedule.saturday &&
                     !schedule.sunday && <p>No days :(</p>}
             </div>
+            <button className="bottom-right" onClick={deleteSchedule} title="Delete this reptile">
+                <FontAwesomeIcon icon={faX} />
+            </button>
         </div>
     )
 }

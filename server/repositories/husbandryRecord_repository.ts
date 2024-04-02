@@ -71,4 +71,27 @@ export class HusbandryRecordRepository {
             }
         })
     }
+
+    async deleteHusbandryRecord(user_id: number, record_id: number) {
+        const record = await this.db.husbandryRecord.findFirst({
+            where: {
+                id: record_id
+            }
+        })
+
+        if (!record) {
+            return null
+        }
+
+        const reptile = await this.getReptileById(user_id, record.reptile_id)
+        if (!reptile) {
+            return null
+        }
+
+        return this.db.husbandryRecord.delete({
+            where: {
+                id: record_id
+            }
+        })
+    }
 }

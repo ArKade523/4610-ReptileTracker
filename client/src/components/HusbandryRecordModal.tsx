@@ -37,7 +37,7 @@ function HusbandryRecordModal({
             <h3>Add Record</h3>
             <form onSubmit={createSchedule}>
                 <label>
-                    Length
+                    Length (in)
                     <input
                         type="number"
                         min="0"
@@ -46,42 +46,46 @@ function HusbandryRecordModal({
                         value={length}
                         placeholder="Length"
                         onChange={(e) => setLength(parseFloat(e.target.value))}
+                        required
                     />
                 </label>
                 <label>
-                    Weight
+                    Weight (g)
                     <input
                         type="number"
                         min="0"
-                        max="50"
-                        step="0.5"
+                        max="5000"
+                        step="5"
                         value={weight}
                         placeholder="Weight"
                         onChange={(e) => setWeight(parseFloat(e.target.value))}
+                        required
                     />
                 </label>
                 <label>
-                    Temperature
+                    Temperature (°F)
                     <input
                         type="number"
                         min="0"
-                        max="50"
+                        max="100"
                         step="0.5"
                         value={temperature}
                         placeholder="Temperature"
                         onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                        required
                     />
                 </label>
                 <label>
-                    Humidity
+                    Humidity (%)
                     <input
                         type="number"
                         min="0"
-                        max="50"
+                        max="100"
                         step="0.5"
                         value={humidity}
                         placeholder="Humidity"
                         onChange={(e) => setHumidity(parseFloat(e.target.value))}
+                        required
                     />
                 </label>
 

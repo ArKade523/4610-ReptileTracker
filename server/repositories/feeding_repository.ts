@@ -58,4 +58,28 @@ export class FeedingRepository {
             }
         })
     }
+
+    async deleteFeeding(user_id: number, feeding_id: number) {
+        const feeding = await this.db.feeding.findFirst({
+            where: {
+                id: feeding_id
+            }
+        })
+
+        if (!feeding) {
+            return null
+        }
+
+        const reptile = await this.getReptileById(user_id, feeding.reptile_id)
+
+        if (!reptile) {
+            return null
+        }
+
+        return this.db.feeding.delete({
+            where: {
+                id: feeding_id
+            }
+        })
+    }
 }

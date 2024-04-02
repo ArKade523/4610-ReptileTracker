@@ -14,7 +14,7 @@ interface State {
 
 const initialState: State = {
     auth: {
-        user: null,
+        user: window.localStorage.getItem('user') as User | null,
         token: window.localStorage.getItem('jwt') as string | null
     },
     reptiles: {

@@ -17,9 +17,13 @@ import UpdateModal from '../components/UpdateModal'
 import { setReptilesSlice } from '../slices/reptilesSlice'
 
 function ReptilePage() {
+    requireLoggedIn()
     const { id } = useParams() as { id: string }
-    const [reptile, setReptile] = useState<Reptile | undefined>(useSelector((state: RootState) =>
-    state.reptiles.reptiles.find((reptile) => reptile.id === parseInt(id))))
+    const [reptile, setReptile] = useState<Reptile | undefined>(
+        useSelector((state: RootState) =>
+            state.reptiles.reptiles.find((reptile) => reptile.id === parseInt(id))
+        )
+    )
     const [feedings, setFeedings] = useState<Feeding[]>([])
     const [schedules, setSchedules] = useState<Schedule[]>([])
     const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([])
@@ -30,7 +34,6 @@ function ReptilePage() {
     const api = useApi()
     const dispatch = useDispatch()
 
-    requireLoggedIn()
 
     const fetchReptiles = async () => {
         const data = await api.get('/reptiles')
@@ -121,7 +124,7 @@ function ReptilePage() {
                         ))}
                     </div>
                     <div className="container-item">
-                        <h2>Husbandry Records</h2>
+                        <h2>Husbandry</h2>
                         <button
                             onClick={() => {
                                 setIsHusbandryModalOpen(true)
